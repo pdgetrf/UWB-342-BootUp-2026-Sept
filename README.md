@@ -1,5 +1,9 @@
 # CSS 342 Boot Up: Linux and C++
 
+## Session Recording
+
+[Linux session 9/26](https://youtu.be/fZ_xXeXgb-E)
+
 This is a lecture companion: commands are deliberately short, safe, and ready to copy and paste. Replace text in `<angle brackets>` with your own values. A command beginning with `$` is a terminal command—copy the text **after** the `$`.
 
 ## 1. Mac: Hello, World!
