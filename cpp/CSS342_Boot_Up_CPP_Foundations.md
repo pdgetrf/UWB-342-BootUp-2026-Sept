@@ -27,16 +27,53 @@ int maxOfTwo(int a, int b) {
 }
 ```
 
-### Stage 0: a test that does not really test
+### Stage 0: begin with a JUnit-style test
 
-Create `find_max.cpp` with only the test. It should fail to compile because `findMax` does not exist yet. A real TDD cycle begins with a failure.
+This is a tiny, self-contained simulation of the JUnit experience: named tests, an assertion helper, and a pass/fail runner. It deliberately uses only free functions; the class section comes later. The important pattern in every test is: calculate an **actual** value, state the **expected** value, compare them, and show both values when they differ. It is not a replacement for a production framework such as GoogleTest.
+
+Create `find_max.cpp` with these test functions. It should fail to compile because `findMax` does not exist yet. A real TDD cycle begins with a failure.
 
 ```cpp
-#include <cassert>
+#include <functional>
+#include <iostream>
+#include <stdexcept>
+#include <string>
+
+int passed = 0;
+int failed = 0;
+
+void expectEqual(const std::string& description, int expected, int actual) {
+    if (expected != actual) {
+        throw std::runtime_error(
+            description + "\n"
+            "  Expected: " + std::to_string(expected) + "\n"
+            "  Actual:   " + std::to_string(actual));
+    }
+}
+
+void runTest(const std::string& name, const std::function<void()>& test) {
+    try {
+        test();
+        ++passed;
+        std::cout << "[PASS] " << name << '\n';
+    } catch (const std::exception& error) {
+        ++failed;
+        std::cout << "[FAIL] " << name << ": " << error.what() << '\n';
+    }
+}
+
+void testFindMaxWhenFirstElementIsLargest() {
+    int values[] = {9, 4, 2};
+    int expected = 9;
+    int actual = findMax(values, 3); // findMax does not exist yet
+    expectEqual("maximum should be the first element", expected, actual);
+}
 
 int main() {
-    int values[] = {9, 4, 2};
-    assert(findMax(values, 3) == 9);
+    runTest("findMax_whenFirstElementIsLargest_returnsFirstElement",
+            testFindMaxWhenFirstElementIsLargest);
+    std::cout << "\n" << passed << " passed, " << failed << " failed\n";
+    return failed == 0 ? 0 : 1;
 }
 ```
 
@@ -46,7 +83,7 @@ g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max
 
 ### Stage 1: minimum implementation that passes one test
 
-Now add this function above `main`. It passes the single test—but it is not a correct maximum function.
+Now add this function above `testFindMaxWhenFirstElementIsLargest`. It passes the single named test—but it is not a correct maximum function.
 
 ```cpp
 int findMax(const int values[], int size) {
@@ -55,25 +92,39 @@ int findMax(const int values[], int size) {
 ```
 
 ```bash
-g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max
-./find_max
-echo $?
+g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max && ./find_max
 ```
 
-An exit status of `0` means the assertion passed. Are you done? No—the only test placed the maximum first.
+You should see a `[PASS]` line followed by `1 passed, 0 failed`. Are you done? No—the only test placed the maximum first.
 
 ### Stage 2: expose the hidden defect
 
-Add a test where the largest number occurs later.
+Add this test function above `main`:
 
 ```cpp
-int main() {
-    int firstIsMax[] = {9, 4, 2};
-    assert(findMax(firstIsMax, 3) == 9);
-
+void testFindMaxWhenLaterElementIsLargest() {
     int laterIsMax[] = {2, 9, 4};
-    assert(findMax(laterIsMax, 3) == 9); // fails with return values[0]
+    int expected = 9;
+    int actual = findMax(laterIsMax, 3);
+    expectEqual("maximum should be a later element", expected, actual);
 }
+```
+
+Then add this call in `main()` immediately after the first `runTest(...)` call:
+
+```cpp
+runTest("findMax_whenLaterElementIsLargest_returnsLaterElement",
+        testFindMaxWhenLaterElementIsLargest);
+```
+
+Run the suite again. One named test passes; the new one fails.
+
+The failure should include enough information to diagnose the problem without opening a debugger:
+
+```text
+[FAIL] findMax_whenLaterElementIsLargest_returnsLaterElement: maximum should be a later element
+  Expected: 9
+  Actual:   2
 ```
 
 ### Stage 3: debug before fixing
@@ -97,22 +148,31 @@ print values[0]
 quit
 ```
 
-The first call receives `{9, 4, 2}`; the second receives `{2, 9, 4}`. The function never examines the later elements. Before changing the code, add edge cases.
+The first call receives `{9, 4, 2}`; the second receives `{2, 9, 4}`. The function never examines the later elements. Before changing the code, add edge cases. Add these test functions above `main`:
 
 ```cpp
-int main() {
-    int firstIsMax[] = {9, 4, 2};
-    assert(findMax(firstIsMax, 3) == 9);
-
-    int laterIsMax[] = {2, 9, 4};
-    assert(findMax(laterIsMax, 3) == 9);
-
+void testFindMaxWhenAllValuesAreNegative() {
     int negatives[] = {-8, -2, -5};
-    assert(findMax(negatives, 3) == -2);
-
-    int oneValue[] = {42};
-    assert(findMax(oneValue, 1) == 42);
+    int expected = -2;
+    int actual = findMax(negatives, 3);
+    expectEqual("maximum should be the least-negative value", expected, actual);
 }
+
+void testFindMaxWhenOneValue() {
+    int oneValue[] = {42};
+    int expected = 42;
+    int actual = findMax(oneValue, 1);
+    expectEqual("one value should be its own maximum", expected, actual);
+}
+```
+
+Also add both calls in `main()`:
+
+```cpp
+runTest("findMax_whenAllValuesAreNegative_returnsLeastNegative",
+        testFindMaxWhenAllValuesAreNegative);
+runTest("findMax_whenOneValue_returnsThatValue",
+        testFindMaxWhenOneValue);
 ```
 
 ### Stage 4: correct implementation
@@ -141,6 +201,28 @@ g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max && ./find_max
 ---
 
 ## 2. Baby-step coding
+
+### `const`: name values that should not change
+
+Use `const` when a value is set once and should not be reassigned. It documents your intent and lets the compiler catch accidental changes.
+
+```cpp
+#include <iostream>
+
+int main() {
+    const int daysInMonth = 30;
+    const double annualRate = 0.08;
+    double balance = 1000.0;
+
+    balance += 500.0; // allowed: balance can change
+    std::cout << "Balance: $" << balance << '\n';
+    std::cout << "Days: " << daysInMonth << '\n';
+
+    // daysInMonth = 31; // compiler error: a const value cannot change
+}
+```
+
+Use `const` for fixed facts such as a target amount, an interest rate, or a number of days. Do not use it for values that are expected to change during a calculation, such as `balance`, `months`, or a loop counter.
 
 ### Exercise A: $1,000,000 now or a penny that doubles?
 
