@@ -119,7 +119,23 @@ The failure should include enough information to diagnose the problem without op
 
 ### Stage 3: debug before fixing
 
-Compile with `-g`, then use `gdb` (Linux):
+#### Primary workflow: CLion breakpoints
+
+Use CLion's debugger to see why the second test fails before you change the code.
+
+1. Open `find_max.cpp` in CLion and make sure the temporary `findMax` implementation still returns `values[0]`.
+2. Click in the left gutter beside the line `int actual = findMax(laterIsMax, 3);` to add a breakpoint.
+3. Start the program with **Debug** (the bug icon), not Run.
+4. When execution pauses, inspect `laterIsMax`, `expected`, and `actual` in the Variables pane. `actual` has not been assigned yet.
+5. Use **Step Into** to enter `findMax`. Inspect `values[0]` and `size`.
+6. Use **Step Over** to execute `return values[0];`. Back in the test, inspect `actual`: it is `2`, even though `expected` is `9`.
+7. Use **Resume Program** to let the test framework report the failure.
+
+After you write the correct loop, put a breakpoint on `if (values[i] > maximum)`. Step Over the loop and watch `i`, `values[i]`, and `maximum`. You should see `maximum` change from `2` to `9`.
+
+#### Optional terminal workflow: `gdb`
+
+If you need to debug from a Linux terminal, compile with `-g`, then use `gdb`:
 
 ```bash
 g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max
