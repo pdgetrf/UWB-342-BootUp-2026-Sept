@@ -93,7 +93,7 @@ At this point, the test passes—but only because it asks for the first value. T
 
 ### Part B: passing tests can still miss a bug
 
-Replace the minimum implementation with this deliberately buggy version. It looks like a normal loop, but it forgets the assignment that updates `maximum`.
+Replace the minimum implementation with this version. It looks like a normal loop and is intentionally incomplete. Do not change it yet; use the tests and debugger to determine why it fails.
 
 ```cpp
 int findMax(const int values[], int size) {
@@ -101,7 +101,6 @@ int findMax(const int values[], int size) {
 
     for (int i = 1; i < size; ++i) {
         if (values[i] > maximum) {
-            // BUG: maximum = values[i]; is missing.
         }
     }
     return maximum;
@@ -173,12 +172,12 @@ The failure should include enough information to diagnose the problem without op
 
 Use CLion's debugger to see why the second test fails before you change the code.
 
-1. Open `find_max.cpp` in CLion and make sure the deliberately buggy loop is present (the assignment to `maximum` is missing).
+1. Open `find_max.cpp` in CLion and make sure the loop implementation from the previous step is present.
 2. Click in the left gutter beside the line `int actual = findMax(laterIsMax, 3);` to add a breakpoint.
 3. Start the program with **Debug** (the bug icon), not Run.
 4. When execution pauses, inspect `laterIsMax`, `expected`, and `actual` in the Variables pane. `actual` has not been assigned yet.
 5. Use **Step Into** to enter `findMax`. Inspect `maximum`, `values[0]`, and `size`.
-6. Use **Step Over** to move through the loop. Notice that the comparison finds `9`, but `maximum` stays `2` because nothing assigns the new value to it.
+6. Use **Step Over** to move through the loop. When the code reaches `9`, watch whether `maximum` changes. Based on that observation, identify which statement belongs inside the `if` block.
 7. Step Over the `return` statement. Back in the test, inspect `actual`: it is `2`, even though `expected` is `9`.
 8. Use **Resume Program** to let the test framework report the failure.
 
@@ -205,7 +204,7 @@ print values[0]
 quit
 ```
 
-The first call receives `{9, 4, 2}`; the failing call receives `{2, 9, 4}`. The loop does examine later values, but `maximum` never changes. Before fixing the code, add one more test that describes the same expected behavior with a different input:
+The first call receives `{9, 4, 2}`; the failing call receives `{2, 9, 4}`. Use what you observed in the debugger to explain the result. Before fixing the code, add one more test that describes the same expected behavior with a different input:
 
 ```cpp
 void testFindMaxWhenLargestValueIsLast() {
@@ -224,7 +223,7 @@ testFindMaxWhenLargestValueIsLast();
 
 #### Stage 6: fix the bug and run every test
 
-Replace the buggy implementation. The missing assignment is the entire fix. The precondition is `size > 0`.
+Replace the incomplete implementation with the corrected version below. Compare it with the earlier loop and identify the line that changes the result. The precondition is `size > 0`.
 
 ```cpp
 int findMax(const int values[], int size) {
