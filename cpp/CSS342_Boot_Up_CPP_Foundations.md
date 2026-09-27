@@ -124,7 +124,7 @@ After attempting the exercise, compare your work with [penny_doubling.cpp](penny
 
 ### Exercise B: savings to $1,000,000
 
-This model applies a monthly deposit, then one month of interest. State that assumption clearly: changing the order changes the result. We use a **7% annual rate** as a conservative classroom estimate based on the S&P 500, an index of roughly 500 large U.S. companies. We can change the starting balance, deposit, rate, and target when running the example.
+While we are on the topic of $1,000,000, here is the next question: **how soon can we get there?** This model compounds **annually**, not monthly. Each year, we apply 7% interest to the previous year's ending balance, then add 12 months of new contributions. We also compare the account's value with the amount of money we personally contributed. We use a **7% annual rate** as a conservative classroom estimate based on the S&P 500, an index of roughly 500 large U.S. companies. We can change the starting deposit, monthly contribution, rate, and target when running the example.
 
 > **Teaching only, not investment advice:** This is a programming model, not a recommendation, prediction, or guarantee about investing. Real investment returns vary, and past market performance does not guarantee future results.
 
@@ -140,23 +140,30 @@ int main() {
     // $1,000,000. How long will the plan take?
     //
     // Compounding means that interest is calculated from the current balance,
-    // including interest earned in earlier months. In other words, the money
+    // including interest earned in earlier years. In other words, the money
     // starts helping to earn more money. A small monthly habit can matter.
     //
-    // TODO: Simulate the account one month at a time. Start with a balance,
-    // monthly deposit, annual interest rate, and target. For this example, use
-    // 0.07 as the annual rate: a conservative classroom estimate based on the
-    // S&P 500, an index of roughly 500 large U.S. companies. Keep going until
-    // the balance reaches the target. Then display the final balance, months, and years.
+    // TODO: Simulate the account one year at a time. Start with an initial
+    // deposit, monthly contribution, annual interest rate, and target. For
+    // this example, use 7.0 as the annual percentage rate: a conservative
+    // classroom estimate based on the S&P 500, an index of roughly 500 large
+    // U.S. companies. Keep going until the balance reaches the target.
     //
     // Hints as we build it:
-    // - Use double for the balance, deposit, rate, and target. Try changing the
-    //   0.07 rate or monthly deposit after the first run and compare the result.
-    // - Use an int to count months.
-    // - A while loop fits because we do not know the answer in advance.
-    // - Convert an annual rate to a monthly rate with annualRate / 12.0.
-    // - Each month, add the deposit and then apply that month's interest.
-    // - Divide months by 12.0, not 12, to calculate years with decimals.
+    // - Use double for initialDeposit, monthlyContribution,
+    //   annualInterestRate, invested, total, and target. Try changing the
+    //   7.0 rate or monthly contribution after the first run.
+    // - Use an int named years to count full years.
+    // - A for loop fits: keep looping while balance is below the target, and
+    //   increase years once after each completed year.
+    // - Start invested and total at initialDeposit.
+    // - At the end of each year, calculate total with the same pattern:
+    //   total = total * (1 + annualInterestRate / 100.0)
+    //         + monthlyContribution * 12;
+    // - Add monthlyContribution * 12 to invested, then print the year,
+    //   total value, and invested amount so we can compare them.
+    // - When the loop ends, print how many years it took. Use an if statement
+    //   to announce when total has reached $1M.
 }
 ```
 
@@ -175,25 +182,24 @@ Now predict the result for `$50`, `$500`, and `$1,000` monthly deposits. Then re
 ```cpp
 #include <iostream>
 
-double yearsToMillion(double startingBalance,
-                      double monthlyDeposit,
-                      double annualRate) {
+int yearsToMillion(double initialDeposit,
+                   double monthlyContribution,
+                   double annualInterestRate) {
     const double target = 1000000.0;
-    double balance = startingBalance;
-    int months = 0;
+    double total = initialDeposit;
+    int years = 0;
 
-    while (balance < target) {
-        balance += monthlyDeposit;
-        balance *= 1.0 + annualRate / 12.0;
-        ++months;
+    for (; total < target; ++years) {
+        total = total * (1.0 + annualInterestRate / 100.0)
+              + monthlyContribution * 12;
     }
 
-    return months / 12.0;
+    return years;
 }
 
 int main() {
-    std::cout << "At $50/month:  " << yearsToMillion(1000, 50, 0.07) << " years\n";
-    std::cout << "At $500/month: " << yearsToMillion(1000, 500, 0.07) << " years\n";
+    std::cout << "At $50/month:  " << yearsToMillion(500, 50, 7.0) << " years\n";
+    std::cout << "At $500/month: " << yearsToMillion(500, 500, 7.0) << " years\n";
 }
 ```
 
@@ -206,7 +212,7 @@ We use `const` when a value is set once and should not be reassigned. It documen
 
 int main() {
     const int daysInMonth = 30;
-    const double annualRate = 0.07;
+    const double annualRate = 7.0;
     double balance = 1000.0;
 
     balance += 500.0; // allowed: balance can change
@@ -217,7 +223,7 @@ int main() {
 }
 ```
 
-Use `const` for fixed facts such as a target amount, an interest rate, or a number of days. Do not use it for values that are expected to change during a calculation, such as `balance`, `months`, or a loop counter.
+Use `const` for fixed facts such as a target amount, an interest rate, or a number of days. Do not use it for values that are expected to change during a calculation, such as `balance`, `years`, or a loop counter.
 
 ### From writing code to testing it
 

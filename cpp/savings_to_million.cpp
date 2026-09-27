@@ -3,19 +3,30 @@
 
 int main() {
     const double target = 1000000.0;
-    double balance = 1000.0;
-    const double monthlyDeposit = 500.0;
-    const double annualRate = 0.07;
-    int months = 0;
-
-    while (balance < target) {
-        balance += monthlyDeposit;
-        balance *= 1.0 + annualRate / 12.0;
-        ++months;
-    }
+    const double initialDeposit = 500.0;
+    const double monthlyContribution = 500.0;
+    const double annualInterestRate = 7.0;
+    double invested = initialDeposit;
+    double total = initialDeposit;
+    int years = 0;
 
     std::cout << std::fixed << std::setprecision(2);
-    std::cout << "Balance: $" << balance << '\n';
-    std::cout << "Months: " << months << '\n';
-    std::cout << "Years: " << months / 12.0 << '\n';
+
+    for (; total < target; ++years) {
+        total = total * (1.0 + annualInterestRate / 100.0)
+              + monthlyContribution * 12;
+        invested += monthlyContribution * 12;
+
+        std::cout << "After year " << years + 1
+                  << ": value = $" << total
+                  << " vs. invested = $" << invested << '\n';
+    }
+
+    std::cout << "\nIt takes " << years << " years to reach $1,000,000.\n";
+    std::cout << "Final value: $" << total << '\n';
+    std::cout << "Total invested: $" << invested << '\n';
+
+    if (total >= target) {
+        std::cout << "Goal reached: $1M!\n";
+    }
 }
