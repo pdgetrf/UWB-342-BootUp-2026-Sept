@@ -136,9 +136,13 @@ testFindMaxWhenOneValue();
 
 All three tests pass. That does **not** mean the loop is correct; it means the tests have not yet made a later value the maximum.
 
-#### Stage 4: add the test that reveals the bug
+#### Stage 4: turn a bug report into a failing test
 
-Add this test function above `main`:
+Imagine a teammate reports: “When I call `findMax` with `{2, 9, 4}`, it returns `2`, not `9`.”
+
+Do **not** open the debugger yet. First turn the report into a missing, reproducible test. This confirms that you understand the report and preserves the problem as a test that must pass after the fix.
+
+Add this test function above `main`, using the reported input and expected result:
 
 ```cpp
 void testFindMaxWhenLaterElementIsLargest() {
@@ -156,7 +160,7 @@ Then add this call in `main()` immediately after the first test call:
 testFindMaxWhenLaterElementIsLargest();
 ```
 
-Run the program again. The first three tests pass, while `testFindMaxWhenLaterElementIsLargest()` fails.
+Run the program again. The first three tests pass, while `testFindMaxWhenLaterElementIsLargest()` fails. Now the bug report is a verified failing test, so you are ready to debug.
 
 The failure should include enough information to diagnose the problem without opening a debugger:
 
