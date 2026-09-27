@@ -2,6 +2,15 @@
 
 Welcome to the CSS 342 C++ boot-up session. We will read, run, and modify small examples together. Copy one stage at a time, predict the outcome, and then test that prediction.
 
+## Guide: TL;DR
+
+- [Before we begin](#before-we-begin): Check that `g++` is available and create a working folder.
+- [Testing mindset](#1-testing-mindset-findmax-and-tdd): Build evidence with tests, follow a TDD cycle, turn a bug report into a failing test, and use CLion to investigate a `findMax` bug.
+- [Baby-step coding](#2-baby-step-coding): Practice `const`, loops, numeric types, conditionals, and functions with two financial exercises.
+- [Memory](#3-memory-stack-heap-pointers-arrays-and-ownership): Learn bits, bytes, addresses, stack versus heap, pointers, references, arrays, dynamic allocation, leaks, Valgrind, and controlled OOM behavior.
+- [OOP and dynamic arrays](#4-oop-from-java-arraylist-to-a-c-dynamic-array): Connect Java `ArrayList` to a C++ class that owns, grows, and releases a dynamic array.
+- [Exit ticket](#exit-ticket): Check the core ideas before leaving the session.
+
 ## Before we begin
 
 Use a Linux terminal with a C++ compiler. The examples below use `g++` and C++17.
