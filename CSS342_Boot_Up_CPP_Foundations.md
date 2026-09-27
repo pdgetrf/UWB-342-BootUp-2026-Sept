@@ -1,8 +1,8 @@
 # CSS 342 Boot Up: C++ Foundations
 
-This is a live-coding companion for the CSS 342 boot-up session. Every code block is intentionally small and runnable. Type or paste one stage at a time, predict the result first, and then run it.
+Welcome to the CSS 342 C++ boot-up session. This handout is for you to read, run, and modify. Every code block is intentionally small and runnable: copy one stage at a time, predict what will happen, then test your prediction.
 
-## Before class
+## Before you begin
 
 Use a Linux terminal with a C++ compiler. The examples below use `g++` and C++17.
 
@@ -11,7 +11,7 @@ g++ --version
 mkdir -p css342-bootup && cd css342-bootup
 ```
 
-> **Safety:** The OOM exercise is only for a disposable teaching VM. It is deliberately limited below; never run an unlimited allocator on a shared or personal machine.
+> **Safety:** Only run the OOM exercise on a disposable course VM. It is deliberately limited below. Never run an unlimited allocator on a shared or personal machine.
 
 ---
 
@@ -60,7 +60,7 @@ g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max
 echo $?
 ```
 
-An exit status of `0` means the assertion passed. Ask: **Are we done?** No: the only test placed the maximum first.
+An exit status of `0` means the assertion passed. Are you done? No—the only test placed the maximum first.
 
 ### Stage 2: expose the hidden defect
 
@@ -207,7 +207,7 @@ int main() {
 }
 ```
 
-Ask students to predict the result for `$50`, `$500`, and `$1,000` monthly deposits. Then refactor—not by changing behavior, but by moving the calculation into a reusable function.
+Before running it, predict the result for `$50`, `$500`, and `$1,000` monthly deposits. Then refactor: keep the behavior the same while moving the calculation into a reusable function.
 
 ```cpp
 #include <iostream>
@@ -411,7 +411,7 @@ Run Valgrind again. The goal is no definitely-lost blocks. The operating system 
 
 ### Controlled OOM demonstration with tmux
 
-Run this only on a disposable Linux teaching VM. This uses `systemd-run` to cap the demo process at 256 MiB, so it demonstrates an allocation failure without exhausting the host.
+Run this only on a disposable Linux course VM. It uses `systemd-run` to cap the demo process at 256 MiB, so you can observe an allocation failure without exhausting the host.
 
 `oom_demo.cpp`:
 
@@ -476,7 +476,7 @@ journalctl -k -b | grep -Ei 'oom|out of memory|killed process|memory' | tail -n 
 tmux kill-session -t oom-demo
 ```
 
-If `systemd-run --user` is unavailable on the VM, do not remove the limit and run the demo unlimited. Ask the VM administrator for a cgroup/container limit instead.
+If `systemd-run --user` is unavailable on your VM, do not remove the limit and run the demo without one. Ask the course staff or VM administrator for a cgroup/container limit instead.
 
 ### Allocate/deallocate repeatedly versus preallocate and reuse
 
@@ -514,7 +514,7 @@ int main() {
 }
 ```
 
-This is a teaching comparison, not a benchmark methodology. The engineering pattern is the lesson: establish ownership, allocate a bounded pool when appropriate, reuse it, and release it at the end of its lifetime.
+This is a conceptual comparison, not a rigorous benchmark. Focus on the engineering pattern: establish ownership, allocate a bounded pool when appropriate, reuse it, and release it at the end of its lifetime.
 
 ---
 
@@ -530,11 +530,11 @@ scores.add(30);
 System.out.println(scores.get(1));
 ```
 
-It still uses an underlying array with a capacity. When it fills, the implementation allocates a larger array, copies elements, and releases the old array for garbage collection. In C++, we will make those steps visible.
+It still uses an underlying array with a capacity. When it fills, the implementation allocates a larger array, copies elements, and releases the old array for garbage collection. In C++, you will make those steps visible.
 
 ### Simplified `DynamicIntArray`
 
-This class owns its buffer. It starts with capacity 2, doubles when full, copies values, deletes the old buffer, and releases the final buffer in its destructor.
+This class owns its buffer. It starts with capacity 2, doubles when full, copies values, deletes the old buffer, and releases the final buffer in its destructor. Read the ownership flow as you run the program.
 
 ```cpp
 #include <cassert>
@@ -631,4 +631,3 @@ Start: `size = 0`, `capacity = 2`
 3. What must pair with `new[]`?
 4. Why can a memory leak be harmless after a short program exits but harmful in a server running for months?
 5. In the dynamic array, what must happen before the old buffer is deleted during a grow?
-
