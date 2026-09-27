@@ -276,7 +276,7 @@ Use `const` for fixed facts such as a target amount, an interest rate, or a numb
 
 ### Exercise A: $1,000,000 now or a penny that doubles?
 
-Predict first: would you take $1,000,000 today, or one penny tomorrow that doubles every day for 30 days? The final day matters—watch for off-by-one errors.
+Predict first: would you take $1,000,000 today, or one penny tomorrow that doubles every day for 30 days? The final day matters. Before changing anything, count how many times the loop actually runs.
 
 ```cpp
 #include <iomanip>
@@ -285,7 +285,7 @@ Predict first: would you take $1,000,000 today, or one penny tomorrow that doubl
 int main() {
     long double pennies = 1.0L;
 
-    for (int day = 1; day <= 30; ++day) {
+    for (int day = 0; day <= 30; ++day) {
         std::cout << "Day " << std::setw(2) << day
                   << ": $" << std::fixed << std::setprecision(2)
                   << static_cast<double>(pennies / 100.0L) << '\n';
@@ -305,11 +305,11 @@ int main() {
 g++ -std=c++17 -Wall -Wextra penny.cpp -o penny && ./penny
 ```
 
-Try these deliberate changes:
+Try these deliberate checks:
 
-- Change `day <= 30` to `day < 30`. What changed, and why?
+- Count the loop iterations from `day = 0` through `day = 30`. Does that represent 30 days or 31 days?
+- Fix the bounds so the code models exactly 30 days. Explain why your revised starting value and condition are correct.
 - Try `int pennies = 1;`. Why is that a poor model for dollars and cents here?
-- Change 30 to 31 and predict the result before running.
 
 ### Exercise B: savings to $1,000,000
 
