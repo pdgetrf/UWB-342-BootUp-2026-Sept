@@ -6,7 +6,7 @@ Welcome to the CSS 342 C++ boot-up session. We will read, run, and modify small 
 
 - [Development environment](#0-development-environment): Choose a Windows, macOS, or Ubuntu Linux setup; use CLion for editing and debugging, and Linux for `g++` and Valgrind.
 - [Before we begin](#before-we-begin): Check that `g++` is available and create a working folder.
-- [Baby-step coding](#1-baby-step-coding-start-by-writing-code): Start coding immediately with `const`, loops, numeric types, conditionals, and functions through two financial exercises.
+- [Baby-step coding](#1-baby-step-coding-start-by-writing-code): Start coding immediately with loops, numeric types, conditionals, and functions through two financial exercises; see the short `const` appendix afterward.
 - [Testing mindset](#2-testing-mindset-findmax-and-tdd): Build evidence with tests, follow a TDD cycle, turn a bug report into a failing test, and use CLion to investigate a `findMax` bug.
 - [Memory](#3-memory-stack-heap-pointers-arrays-and-ownership): Learn bits, bytes, addresses, stack versus heap, pointers, references, arrays, dynamic allocation, leaks, Valgrind, and controlled OOM behavior.
 - [OOP and dynamic arrays](#4-oop-from-java-arraylist-to-a-c-dynamic-array): Connect Java `ArrayList` to a C++ class that owns, grows, and releases a dynamic array.
@@ -78,28 +78,6 @@ mkdir -p css342-bootup && cd css342-bootup
 ## 1. Baby-step coding: start by writing code
 
 We start by writing a small program right away. This gives us a feel for the C++ tools, variables, loops, output, and functions. Once we have code in front of us, we can ask the next important question: how do we know it works?
-
-### `const`: name values that should not change
-
-We use `const` when a value is set once and should not be reassigned. It documents intent and lets the compiler catch accidental changes.
-
-```cpp
-#include <iostream>
-
-int main() {
-    const int daysInMonth = 30;
-    const double annualRate = 0.08;
-    double balance = 1000.0;
-
-    balance += 500.0; // allowed: balance can change
-    std::cout << "Balance: $" << balance << '\n';
-    std::cout << "Days: " << daysInMonth << '\n';
-
-    // daysInMonth = 31; // compiler error: a const value cannot change
-}
-```
-
-Use `const` for fixed facts such as a target amount, an interest rate, or a number of days. Do not use it for values that are expected to change during a calculation, such as `balance`, `months`, or a loop counter.
 
 ### Exercise A: $1,000,000 now or a penny that doubles?
 
@@ -192,6 +170,28 @@ int main() {
     std::cout << "At $500/month: " << yearsToMillion(1000, 500, 0.08) << " years\n";
 }
 ```
+
+### Appendix: `const`
+
+We use `const` when a value is set once and should not be reassigned. It documents intent and lets the compiler catch accidental changes.
+
+```cpp
+#include <iostream>
+
+int main() {
+    const int daysInMonth = 30;
+    const double annualRate = 0.08;
+    double balance = 1000.0;
+
+    balance += 500.0; // allowed: balance can change
+    std::cout << "Balance: $" << balance << '\n';
+    std::cout << "Days: " << daysInMonth << '\n';
+
+    // daysInMonth = 31; // compiler error: a const value cannot change
+}
+```
+
+Use `const` for fixed facts such as a target amount, an interest rate, or a number of days. Do not use it for values that are expected to change during a calculation, such as `balance`, `months`, or a loop counter.
 
 ### From writing code to testing it
 
