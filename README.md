@@ -12,4 +12,4 @@ Welcome to the CSS 342 boot-up materials. Use the folder that matches the topic 
 - [Linux setup and command-line guide](linux/README.md)
 - [C++ foundations guide](cpp/CSS342_Boot_Up_CPP_Foundations.md)
 
-Each topic folder also includes its lecture PDF and any related source files.
+The C++ folder includes copy-paste source files. The Linux folder includes its lecture PDF and related source material.
