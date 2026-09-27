@@ -124,33 +124,46 @@ After attempting the exercise, compare your work with [penny_doubling.cpp](penny
 
 ### Exercise B: savings to $1,000,000
 
-This model applies a monthly deposit, then one month of interest. State that assumption clearly: changing the order changes the result.
+This model applies a monthly deposit, then one month of interest. State that assumption clearly: changing the order changes the result. Create `savings_to_million.cpp`, then copy this starter into your coding environment:
 
 ```cpp
 #include <iomanip>
 #include <iostream>
 
 int main() {
-    const double target = 1000000.0;
-    double balance = 1000.0;
-    const double monthlyDeposit = 500.0;
-    const double annualRate = 0.08;
-    int months = 0;
-
-    while (balance < target) {
-        balance += monthlyDeposit;
-        balance *= 1.0 + annualRate / 12.0;
-        ++months;
-    }
-
-    std::cout << std::fixed << std::setprecision(2);
-    std::cout << "Balance: $" << balance << '\n';
-    std::cout << "Months: " << months << '\n';
-    std::cout << "Years: " << months / 12.0 << '\n';
+    // Imagine that future-you has a simple plan: start with some savings,
+    // add money every month, and let the account earn interest. The target is
+    // $1,000,000. How long will the plan take?
+    //
+    // Compounding means that interest is calculated from the current balance,
+    // including interest earned in earlier months. In other words, the money
+    // starts helping to earn more money. A small monthly habit can matter.
+    //
+    // TODO: Simulate the account one month at a time. Start with a balance,
+    // monthly deposit, annual interest rate, and target. Keep going until the
+    // balance reaches the target. Then display the final balance, months, and years.
+    //
+    // Hints as we build it:
+    // - Use double for the balance, deposit, rate, and target.
+    // - Use an int to count months.
+    // - A while loop fits because we do not know the answer in advance.
+    // - Convert an annual rate to a monthly rate with annualRate / 12.0.
+    // - Each month, add the deposit and then apply that month's interest.
+    // - Divide months by 12.0, not 12, to calculate years with decimals.
 }
 ```
 
-Before running it, predict the result for `$50`, `$500`, and `$1,000` monthly deposits. Then refactor: keep the behavior the same while moving the calculation into a reusable function.
+```bash
+g++ -std=c++17 -Wall -Wextra savings_to_million.cpp -o savings_to_million && ./savings_to_million
+```
+
+### Completed reference file: savings_to_million.cpp
+
+After attempting the simulation, compare your work with [savings_to_million.cpp](savings_to_million.cpp). This is the completed first version, before we refactor the calculation into a function.
+
+### Refactor the calculation into a function
+
+Now predict the result for `$50`, `$500`, and `$1,000` monthly deposits. Then refactor: keep the behavior the same while moving the calculation into a reusable function.
 
 ```cpp
 #include <iostream>
