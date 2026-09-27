@@ -27,11 +27,13 @@ int maxOfTwo(int a, int b) {
 }
 ```
 
-### Stage 0: begin with a JUnit-style test
+### Part A: test-driven development
 
 This is a tiny, self-contained simulation of the JUnit experience: named tests, an assertion helper, and pass/fail output. It deliberately uses only free functions; the class section comes later. The important pattern in every test is: calculate an **actual** value, state the **expected** value, compare them, and show both values when they differ. It is not a replacement for a production framework such as GoogleTest.
 
-Create `find_max.cpp` with these test functions. It should fail to compile because `findMax` does not exist yet. A real TDD cycle begins with a failure.
+#### Stage 1: write a test first
+
+Create `find_max.cpp` with these test functions. It should fail to compile because `findMax` does not exist yet. That failure is the first part of the TDD cycle.
 
 ```cpp
 #include <iostream>
@@ -71,7 +73,7 @@ int main() {
 g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max
 ```
 
-### Stage 1: minimum implementation that passes one test
+#### Stage 2: write the minimum code to pass
 
 Now add this function above `testFindMaxWhenFirstElementIsLargest`. It passes the single named test—but it is not a correct maximum function.
 
@@ -87,7 +89,55 @@ g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max && ./find_max
 
 You should see a `[PASS]` line followed by `1 passed, 0 failed`. Are you done? No—the only test placed the maximum first.
 
-### Stage 2: expose the hidden defect
+At this point, the test passes—but only because it asks for the first value. The function is not fully tested yet.
+
+### Part B: passing tests can still miss a bug
+
+Replace the minimum implementation with this deliberately buggy version. It looks like a normal loop, but it forgets the assignment that updates `maximum`.
+
+```cpp
+int findMax(const int values[], int size) {
+    int maximum = values[0];
+
+    for (int i = 1; i < size; ++i) {
+        if (values[i] > maximum) {
+            // BUG: maximum = values[i]; is missing.
+        }
+    }
+    return maximum;
+}
+```
+
+#### Stage 3: add more tests that still pass
+
+The existing first-element test still passes. Add these two tests. They also pass because in both cases the first element really is the maximum.
+
+```cpp
+void testFindMaxWhenValuesDecrease() {
+    int values[] = {10, 7, 3};
+    int expected = 10;
+    int actual = findMax(values, 3);
+    expectEqual("findMax_whenValuesDecrease_returnsFirstElement", expected, actual);
+}
+
+void testFindMaxWhenOneValue() {
+    int values[] = {42};
+    int expected = 42;
+    int actual = findMax(values, 1);
+    expectEqual("findMax_whenOneValue_returnsThatValue", expected, actual);
+}
+```
+
+Add both calls in `main()`:
+
+```cpp
+testFindMaxWhenValuesDecrease();
+testFindMaxWhenOneValue();
+```
+
+All three tests pass. That does **not** mean the loop is correct; it means the tests have not yet made a later value the maximum.
+
+#### Stage 4: add the test that reveals the bug
 
 Add this test function above `main`:
 
@@ -107,7 +157,7 @@ Then add this call in `main()` immediately after the first test call:
 testFindMaxWhenLaterElementIsLargest();
 ```
 
-Run the program again. `testFindMaxWhenFirstElementIsLargest()` passes, while `testFindMaxWhenLaterElementIsLargest()` fails.
+Run the program again. The first three tests pass, while `testFindMaxWhenLaterElementIsLargest()` fails.
 
 The failure should include enough information to diagnose the problem without opening a debugger:
 
@@ -117,23 +167,24 @@ The failure should include enough information to diagnose the problem without op
   Actual:   2
 ```
 
-### Stage 3: debug before fixing
+#### Stage 5: debug before fixing
 
-#### Primary workflow: CLion breakpoints
+##### Primary workflow: CLion breakpoints
 
 Use CLion's debugger to see why the second test fails before you change the code.
 
-1. Open `find_max.cpp` in CLion and make sure the temporary `findMax` implementation still returns `values[0]`.
+1. Open `find_max.cpp` in CLion and make sure the deliberately buggy loop is present (the assignment to `maximum` is missing).
 2. Click in the left gutter beside the line `int actual = findMax(laterIsMax, 3);` to add a breakpoint.
 3. Start the program with **Debug** (the bug icon), not Run.
 4. When execution pauses, inspect `laterIsMax`, `expected`, and `actual` in the Variables pane. `actual` has not been assigned yet.
-5. Use **Step Into** to enter `findMax`. Inspect `values[0]` and `size`.
-6. Use **Step Over** to execute `return values[0];`. Back in the test, inspect `actual`: it is `2`, even though `expected` is `9`.
-7. Use **Resume Program** to let the test framework report the failure.
+5. Use **Step Into** to enter `findMax`. Inspect `maximum`, `values[0]`, and `size`.
+6. Use **Step Over** to move through the loop. Notice that the comparison finds `9`, but `maximum` stays `2` because nothing assigns the new value to it.
+7. Step Over the `return` statement. Back in the test, inspect `actual`: it is `2`, even though `expected` is `9`.
+8. Use **Resume Program** to let the test framework report the failure.
 
 After you write the correct loop, put a breakpoint on `if (values[i] > maximum)`. Step Over the loop and watch `i`, `values[i]`, and `maximum`. You should see `maximum` change from `2` to `9`.
 
-#### Optional terminal workflow: `gdb`
+##### Optional terminal workflow: `gdb`
 
 If you need to debug from a Linux terminal, compile with `-g`, then use `gdb`:
 
@@ -154,35 +205,26 @@ print values[0]
 quit
 ```
 
-The first call receives `{9, 4, 2}`; the second receives `{2, 9, 4}`. The function never examines the later elements. Before changing the code, add edge cases. Add these test functions above `main`:
+The first call receives `{9, 4, 2}`; the failing call receives `{2, 9, 4}`. The loop does examine later values, but `maximum` never changes. Before fixing the code, add one more test that describes the same expected behavior with a different input:
 
 ```cpp
-void testFindMaxWhenAllValuesAreNegative() {
-    int negatives[] = {-8, -2, -5};
-    int expected = -2;
-    int actual = findMax(negatives, 3);
-    expectEqual("findMax_whenAllValuesAreNegative_returnsLeastNegative",
-                expected, actual);
-}
-
-void testFindMaxWhenOneValue() {
-    int oneValue[] = {42};
-    int expected = 42;
-    int actual = findMax(oneValue, 1);
-    expectEqual("findMax_whenOneValue_returnsThatValue", expected, actual);
+void testFindMaxWhenLargestValueIsLast() {
+    int values[] = {3, 5, 10};
+    int expected = 10;
+    int actual = findMax(values, 3);
+    expectEqual("findMax_whenLargestValueIsLast_returnsLastElement", expected, actual);
 }
 ```
 
-Also add both calls in `main()`:
+Also add this call in `main()`:
 
 ```cpp
-testFindMaxWhenAllValuesAreNegative();
-testFindMaxWhenOneValue();
+testFindMaxWhenLargestValueIsLast();
 ```
 
-### Stage 4: correct implementation
+#### Stage 6: fix the bug and run every test
 
-Replace the temporary implementation. The precondition is `size > 0`.
+Replace the buggy implementation. The missing assignment is the entire fix. The precondition is `size > 0`.
 
 ```cpp
 int findMax(const int values[], int size) {
