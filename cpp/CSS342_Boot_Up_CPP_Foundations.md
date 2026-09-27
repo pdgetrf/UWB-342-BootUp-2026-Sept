@@ -455,9 +455,9 @@ This uses `systemd-run` to cap the demo process at 256 MiB, so we can observe an
 #include <vector>
 
 int main() {
-    constexpr std::size_t chunkMiB = 16;
+    constexpr std::size_t chunkMiB = 16; // allocate in visible 16 MiB steps
     constexpr std::size_t chunkBytes = chunkMiB * 1024 * 1024;
-    std::vector<char*> chunks;
+    std::vector<char*> chunks;           // remember every allocation for cleanup
 
     try {
         while (true) {
@@ -467,13 +467,13 @@ int main() {
             }
             chunks.push_back(chunk);
             std::cout << "Allocated " << chunks.size() * chunkMiB << " MiB" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(500)); // slow enough to observe
         }
     } catch (const std::bad_alloc&) {
         std::cerr << "Allocation failed: memory limit reached.\n";
     }
 
-    for (char* chunk : chunks) {
+    for (char* chunk : chunks) { // release everything allocated before the limit
         delete[] chunk;
     }
 }
@@ -522,6 +522,7 @@ constexpr int count = 1000;
 
 int main() {
     auto start = std::chrono::steady_clock::now();
+    // Pattern 1: allocate and release a new array every time through the loop.
     for (int i = 0; i < iterations; ++i) {
         int* values = new int[count]{};
         values[0] = i;
@@ -529,6 +530,7 @@ int main() {
     }
     auto afterAllocateEachTime = std::chrono::steady_clock::now();
 
+    // Pattern 2: allocate once, then reuse the same array.
     int* reused = new int[count]{};
     for (int i = 0; i < iterations; ++i) {
         reused[0] = i;
@@ -836,22 +838,22 @@ This class owns its buffer. It starts with capacity 2, doubles when full, copies
 class DynamicIntArray {
 public:
     DynamicIntArray()
-        : data_(new int[2]), size_(0), capacity_(2) {}
+        : data_(new int[2]), size_(0), capacity_(2) {} // this object owns the buffer
 
     ~DynamicIntArray() {
-        delete[] data_;
+        delete[] data_; // release the buffer when the object goes away
     }
 
     void add(int value) {
         if (size_ == capacity_) {
-            grow();
+            grow(); // make room before writing a new value
         }
-        data_[size_] = value;
+        data_[size_] = value; // write into the next unused slot
         ++size_;
     }
 
     int get(int index) const {
-        assert(index >= 0 && index < size_);
+        assert(index >= 0 && index < size_); // stop if the index is invalid
         return data_[index];
     }
 
@@ -865,15 +867,16 @@ public:
 
 private:
     void grow() {
-        const int newCapacity = capacity_ * 2;
+        const int newCapacity = capacity_ * 2; // doubling avoids growing every add
         int* larger = new int[newCapacity];
 
+        // Copy existing values before releasing the old buffer.
         for (int i = 0; i < size_; ++i) {
             larger[i] = data_[i];
         }
 
-        delete[] data_;
-        data_ = larger;
+        delete[] data_; // the old buffer is no longer needed
+        data_ = larger; // this object now owns the larger buffer
         capacity_ = newCapacity;
     }
 
