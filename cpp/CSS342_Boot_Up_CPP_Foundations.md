@@ -128,6 +128,8 @@ While we are on the topic of $1,000,000, here is the next question: **how soon c
 
 > **Teaching only, not investment advice:** This is a programming model, not a recommendation, prediction, or guarantee about investing. Real investment returns vary, and past market performance does not guarantee future results.
 
+Use the [Exercise B compounding-interest reference](exercise_b.pdf) alongside this coding exercise for the underlying financial model and example calculation.
+
 Create `savings_to_million.cpp`, then copy this starter into your coding environment:
 
 ```cpp
@@ -233,6 +235,8 @@ We have started writing code. Next, we look at where its values live and how C++
 
 
 ## 2. Memory: stack, heap, pointers, arrays, and ownership
+
+Use the [memory system reference](memory_system.pdf) alongside this section. It provides a visual companion for the memory concepts and terminology we use below.
 
 ### Memory foundations: bits, bytes, size, and addresses
 
