@@ -15,17 +15,28 @@ mkdir -p css342-bootup && cd css342-bootup
 
 ## 1. Testing mindset: `findMax` and TDD
 
-**Idea:** A passing test proves only that the program works for that test. It does not prove the program is correct. We own the quality of our code, so we add cases that try to break our assumptions.
-
 ### “Does it work?”
 
-Start with an ordinary programming question: **Does your code work?**
+You have written a function. Someone asks: **Does your code work?**
 
-“It should” is not a useful answer for a computer scientist. A better answer is evidence-based:
+“It should” may be your initial guess, but it is not a useful final answer for a computer scientist. You need evidence.
+
+### What testing means
+
+A **test** runs a small, specific example and checks its result:
+
+1. Choose an input.
+2. State the result you **expect**.
+3. Run the code to get the **actual** result.
+4. Compare expected and actual, then report whether they match.
+
+For example, for `findMax({9, 4, 2})`, you expect `9`. The test calls the function, compares its actual result with `9`, and reports pass or fail.
+
+After you have tests, an evidence-based answer to “Does it work?” sounds like this:
 
 > “It passes the tests I wrote for these cases. I may need more tests to cover other cases.”
 
-Even “it passes all the tests” needs one important qualifier: it passes all the tests **that currently exist**. A test suite can be incomplete, and an untested case can still contain a bug.
+### Your responsibility as the developer
 
 Testing is your responsibility. Do not wait for a professor's tests to tell you whether your program works. Write tests yourself, run them, and show the evidence that your code passes them. In a class, that may feel unnecessary; on a real project, it is how teammates, reviewers, and future you gain confidence that a change did not break the software.
 
@@ -39,7 +50,7 @@ int maxOfTwo(int a, int b) {
 
 ### Part A: test-driven development
 
-This is a tiny, self-contained simulation of the JUnit experience: named tests, an assertion helper, and pass/fail output. It deliberately uses only free functions; the class section comes later. The important pattern in every test is: calculate an **actual** value, state the **expected** value, compare them, and show both values when they differ. It is not a replacement for a production framework such as GoogleTest.
+This is a tiny, self-contained simulation of the JUnit experience: named tests, an assertion helper, and pass/fail output. It deliberately uses only free functions; the class section comes later. It is not a replacement for a production framework such as GoogleTest.
 
 #### Stage 1: write a test first
 
@@ -97,9 +108,13 @@ int findMax(const int values[], int size) {
 g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max && ./find_max
 ```
 
-You should see a `[PASS]` line followed by `1 passed, 0 failed`. Are you done? No—the only test placed the maximum first.
+You should see a `[PASS]` line followed by `1 passed, 0 failed`.
 
-At this point, the test passes—but only because it asks for the first value. The function is not fully tested yet.
+### What does a passing test prove?
+
+The test proves that `findMax` works for the input `{9, 4, 2}`. It does **not** prove that `findMax` works for every valid input. Even “all tests pass” means only that all tests **currently written** pass; the test suite can still be incomplete.
+
+That is why developers add more cases, especially cases that challenge assumptions. The next part gives the function a believable bug and shows how several passing tests can still miss it.
 
 ### Part B: passing tests can still miss a bug
 
