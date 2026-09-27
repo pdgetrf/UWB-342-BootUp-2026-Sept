@@ -29,36 +29,26 @@ int maxOfTwo(int a, int b) {
 
 ### Stage 0: begin with a JUnit-style test
 
-This is a tiny, self-contained simulation of the JUnit experience: named tests, an assertion helper, and a pass/fail runner. It deliberately uses only free functions; the class section comes later. The important pattern in every test is: calculate an **actual** value, state the **expected** value, compare them, and show both values when they differ. It is not a replacement for a production framework such as GoogleTest.
+This is a tiny, self-contained simulation of the JUnit experience: named tests, an assertion helper, and pass/fail output. It deliberately uses only free functions; the class section comes later. The important pattern in every test is: calculate an **actual** value, state the **expected** value, compare them, and show both values when they differ. It is not a replacement for a production framework such as GoogleTest.
 
 Create `find_max.cpp` with these test functions. It should fail to compile because `findMax` does not exist yet. A real TDD cycle begins with a failure.
 
 ```cpp
-#include <functional>
 #include <iostream>
-#include <stdexcept>
 #include <string>
 
 int passed = 0;
 int failed = 0;
 
-void expectEqual(const std::string& description, int expected, int actual) {
-    if (expected != actual) {
-        throw std::runtime_error(
-            description + "\n"
-            "  Expected: " + std::to_string(expected) + "\n"
-            "  Actual:   " + std::to_string(actual));
-    }
-}
-
-void runTest(const std::string& name, const std::function<void()>& test) {
-    try {
-        test();
+void expectEqual(const std::string& testName, int expected, int actual) {
+    if (expected == actual) {
         ++passed;
-        std::cout << "[PASS] " << name << '\n';
-    } catch (const std::exception& error) {
+        std::cout << "[PASS] " << testName << '\n';
+    } else {
         ++failed;
-        std::cout << "[FAIL] " << name << ": " << error.what() << '\n';
+        std::cout << "[FAIL] " << testName << '\n'
+                  << "  Expected: " << expected << '\n'
+                  << "  Actual:   " << actual << '\n';
     }
 }
 
@@ -66,12 +56,12 @@ void testFindMaxWhenFirstElementIsLargest() {
     int values[] = {9, 4, 2};
     int expected = 9;
     int actual = findMax(values, 3); // findMax does not exist yet
-    expectEqual("maximum should be the first element", expected, actual);
+    expectEqual("findMax_whenFirstElementIsLargest_returnsFirstElement",
+                expected, actual);
 }
 
 int main() {
-    runTest("findMax_whenFirstElementIsLargest_returnsFirstElement",
-            testFindMaxWhenFirstElementIsLargest);
+    testFindMaxWhenFirstElementIsLargest();
     std::cout << "\n" << passed << " passed, " << failed << " failed\n";
     return failed == 0 ? 0 : 1;
 }
@@ -106,15 +96,15 @@ void testFindMaxWhenLaterElementIsLargest() {
     int laterIsMax[] = {2, 9, 4};
     int expected = 9;
     int actual = findMax(laterIsMax, 3);
-    expectEqual("maximum should be a later element", expected, actual);
+    expectEqual("findMax_whenLaterElementIsLargest_returnsLaterElement",
+                expected, actual);
 }
 ```
 
-Then add this call in `main()` immediately after the first `runTest(...)` call:
+Then add this call in `main()` immediately after the first test call:
 
 ```cpp
-runTest("findMax_whenLaterElementIsLargest_returnsLaterElement",
-        testFindMaxWhenLaterElementIsLargest);
+testFindMaxWhenLaterElementIsLargest();
 ```
 
 Run the suite again. One named test passes; the new one fails.
@@ -122,7 +112,7 @@ Run the suite again. One named test passes; the new one fails.
 The failure should include enough information to diagnose the problem without opening a debugger:
 
 ```text
-[FAIL] findMax_whenLaterElementIsLargest_returnsLaterElement: maximum should be a later element
+[FAIL] findMax_whenLaterElementIsLargest_returnsLaterElement
   Expected: 9
   Actual:   2
 ```
@@ -155,24 +145,23 @@ void testFindMaxWhenAllValuesAreNegative() {
     int negatives[] = {-8, -2, -5};
     int expected = -2;
     int actual = findMax(negatives, 3);
-    expectEqual("maximum should be the least-negative value", expected, actual);
+    expectEqual("findMax_whenAllValuesAreNegative_returnsLeastNegative",
+                expected, actual);
 }
 
 void testFindMaxWhenOneValue() {
     int oneValue[] = {42};
     int expected = 42;
     int actual = findMax(oneValue, 1);
-    expectEqual("one value should be its own maximum", expected, actual);
+    expectEqual("findMax_whenOneValue_returnsThatValue", expected, actual);
 }
 ```
 
 Also add both calls in `main()`:
 
 ```cpp
-runTest("findMax_whenAllValuesAreNegative_returnsLeastNegative",
-        testFindMaxWhenAllValuesAreNegative);
-runTest("findMax_whenOneValue_returnsThatValue",
-        testFindMaxWhenOneValue);
+testFindMaxWhenAllValuesAreNegative();
+testFindMaxWhenOneValue();
 ```
 
 ### Stage 4: correct implementation
