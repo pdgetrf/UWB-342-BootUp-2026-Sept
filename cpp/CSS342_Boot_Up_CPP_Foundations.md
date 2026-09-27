@@ -81,30 +81,27 @@ We start by writing a small program right away. This gives us a feel for the C++
 
 ### Exercise A: $1,000,000 now or a penny that doubles?
 
-Before we run the program, choose: $1,000,000 today, or one penny tomorrow that doubles every day for 30 days? The final day matters. Count how many times the loop actually runs before changing anything.
+Before we run the program, choose: $1,000,000 today, or one penny on Day 1 that doubles each new day through Day 30? We keep this first program simple: use an integer, a loop, and one final print statement.
 
 Create a file named `penny_doubling.cpp`, then copy this starter code into your coding environment:
 
 ```cpp
-#include <iomanip>
 #include <iostream>
 
 int main() {
     // Imagine a strange offer: take $1,000,000 today, or take one penny
-    // tomorrow and let it double every day for 30 days. At first, a penny
-    // sounds tiny. For example, after a few doublings it is 1, 2, 4, 8...
-    // Does the small choice ever catch the $1,000,000 choice?
+    // on Day 1 that doubles each new day through Day 30. At first, a penny
+    // sounds tiny. After a few doublings it is 1, 2, 4, 8... How large can it become?
     //
-    // TODO: Build the simulation. Start with one penny, double it once per
-    // day, print each day's dollar amount, then announce which choice wins.
+    // TODO: Start with one penny on Day 1. Because Day 1 is already here,
+    // use a for loop for Days 2 through 30. Double the pennies each day,
+    // then print the final result for Day 30.
     //
     // Hints as we build it:
-    // - Use long double for the number of pennies, starting at 1.0L.
-    // - A for loop can count the days. Be careful: if we count from 0 through
-    //   30, how many loop iterations do we actually run?
-    // - Divide pennies by 100.0L to display dollars, such as $0.01 for one penny.
-    // - Use std::fixed and std::setprecision(2) to make dollar amounts readable.
-    // - Use an if/else statement or the ternary operator to announce the winner.
+    // - Begin with: int pennies = 1;
+    // - Use a for loop with a day counter from 2 through 30.
+    // - Double the amount with: pennies *= 2;
+    // - Print the final number of pennies with std::cout.
 }
 ```
 
@@ -112,11 +109,17 @@ int main() {
 g++ -std=c++17 -Wall -Wextra penny_doubling.cpp -o penny_doubling && ./penny_doubling
 ```
 
-Try these deliberate checks:
+Try a few small changes after the first run:
 
-- Count the loop iterations from `day = 0` through `day = 30`. Does that represent 30 days or 31 days?
-- Fix the bounds so the code models exactly 30 days. Explain why the revised starting value and condition are correct.
-- Try `int pennies = 1;`. Why is that a poor model for dollars and cents here?
+- Change 30 to 10. What final result do we get?
+- Print the value after each loop iteration to watch it grow.
+- Change the starting value from 1 to 2. What changes in the result?
+
+### Follow-up: when does the penny pass $1,000,000?
+
+After the main exercise works, add a check inside the loop. There are 100 pennies in one dollar, so $1,000,000 is 100,000,000 pennies. Print the day when the number first reaches that value, then use `break` so we report only the first qualifying day. Our completed reference uses this extension and finds Day 28.
+
+We intentionally begin with `int`. If we extend the experiment and the result no longer makes sense, we can change `int pennies` to `long pennies` and use that moment to discuss how much information each type can store.
 
 ### Completed reference file
 

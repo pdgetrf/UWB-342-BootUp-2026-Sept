@@ -1,20 +1,17 @@
-#include <iomanip>
 #include <iostream>
 
 int main() {
-    long double pennies = 1.0L; // keep the amount in pennies while it doubles
+    int pennies = 1; // Day 1 starts with one penny
 
-    for (int day = 0; day <= 30; ++day) {
-        std::cout << "Day " << std::setw(2) << day
-                  << ": $" << std::fixed << std::setprecision(2)
-                  << static_cast<double>(pennies / 100.0L) << '\n'; // pennies to dollars
-        pennies *= 2.0L;
+    // Day 1 is already counted, so double on Days 2 through 30.
+    for (int day = 2; day <= 30; ++day) {
+        pennies *= 2; // amount on this day
+
+        // Compare pennies directly: 100,000,000 pennies equals $1,000,000.
+        if (pennies >= 100000000) {
+            std::cout << "Day " << day << ": " << pennies
+                      << " pennies, more than $1M!\n";
+            break; // We found the first day, so no later days are needed.
+        }
     }
-
-    const long double doubledChoice = pennies / 2.0L / 100.0L; // last displayed amount
-    std::cout << "Final doubled amount: $"
-              << static_cast<double>(doubledChoice) << '\n';
-    std::cout << (doubledChoice > 1000000.0L
-                      ? "Choose the doubling penny.\n"
-                      : "Choose the $1,000,000.\n");
 }
