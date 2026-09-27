@@ -17,6 +17,18 @@ mkdir -p css342-bootup && cd css342-bootup
 
 **Idea:** A passing test proves only that the program works for that test. It does not prove the program is correct. We own the quality of our code, so we add cases that try to break our assumptions.
 
+### “Does it work?”
+
+Start with an ordinary programming question: **Does your code work?**
+
+“It should” is not a useful answer for a computer scientist. A better answer is evidence-based:
+
+> “It passes the tests I wrote for these cases. I may need more tests to cover other cases.”
+
+Even “it passes all the tests” needs one important qualifier: it passes all the tests **that currently exist**. A test suite can be incomplete, and an untested case can still contain a bug.
+
+Testing is your responsibility. Do not wait for a professor's tests to tell you whether your program works. Write tests yourself, run them, and show the evidence that your code passes them. In a class, that may feel unnecessary; on a real project, it is how teammates, reviewers, and future you gain confidence that a change did not break the software.
+
 ### Warm-up: max of two values
 
 ```cpp
