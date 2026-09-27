@@ -39,8 +39,14 @@ Other common IDE choices include Visual Studio on Windows and VS Code on all thr
 On an Ubuntu machine, install the compiler, debugger, build tools, and Valgrind:
 
 ```bash
+# Refresh Ubuntu's list of available packages.
 sudo apt update
+
+# Install the C++ compiler and build tools, terminal debugger, memory checker,
+# CMake build system, and Vim editor.
 sudo apt install -y build-essential gdb valgrind cmake vim
+
+# Confirm that the compiler, debugger, and memory checker are ready to use.
 g++ --version
 gdb --version
 valgrind --version
