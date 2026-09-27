@@ -4,7 +4,7 @@
 
 [Linux session 9/26](https://youtu.be/fZ_xXeXgb-E)
 
-This is a lecture companion: commands are deliberately short, safe, and ready to copy and paste. Replace text in `<angle brackets>` with your own values. A command beginning with `$` is a terminal command—copy the text **after** the `$`.
+This companion keeps commands short, safe, and ready to copy and paste. Replace text in `<angle brackets>` with the appropriate values. A command beginning with `$` is a terminal command; copy the text **after** the `$`.
 
 ## 1. Mac: Hello, World!
 
@@ -41,7 +41,7 @@ xcode-select --install
 
 ## 2. AWS / Ubuntu setup
 
-In AWS, launch an Ubuntu instance approved for the course. During setup, download and keep the key file (`.pem`) private—do not commit it or share it.
+In AWS, launch an Ubuntu instance approved for the course. During setup, download and keep the key file (`.pem`) private. Do not commit it or share it.
 
 Move the downloaded key into `~/.ssh` and restrict its permissions. Substitute the actual downloaded filename.
 
@@ -131,7 +131,7 @@ ls -l renamed.txt
 rm -i renamed.txt
 ```
 
-The `-i` asks for confirmation. Type `y` only after reading the full filename. Avoid `rm -rf`, wildcards such as `rm *`, and commands you do not fully understand—especially on a server.
+The `-i` asks for confirmation. Type `y` only after reading the full filename. Avoid `rm -rf`, wildcards such as `rm *`, and commands we do not fully understand, especially on a server.
 
 To remove an empty directory only:
 

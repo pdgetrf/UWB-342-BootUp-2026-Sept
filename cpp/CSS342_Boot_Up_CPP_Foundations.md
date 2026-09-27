@@ -1,8 +1,8 @@
 # CSS 342 Boot Up: C++ Foundations
 
-Welcome to the CSS 342 C++ boot-up session. This handout is for you to read, run, and modify. Every code block is intentionally small and runnable: copy one stage at a time, predict what will happen, then test your prediction.
+Welcome to the CSS 342 C++ boot-up session. We will read, run, and modify small examples together. Copy one stage at a time, predict the outcome, and then test that prediction.
 
-## Before you begin
+## Before we begin
 
 Use a Linux terminal with a C++ compiler. The examples below use `g++` and C++17.
 
@@ -17,9 +17,9 @@ mkdir -p css342-bootup && cd css342-bootup
 
 ### “Does it work?”
 
-You have written a function. Someone asks: **Does your code work?**
+We have written a function. Someone asks: **Does it work?**
 
-“It should” may be your initial guess, but it is not a useful final answer for a computer scientist. You need evidence.
+“It should” may be an initial guess, but it is not a useful final answer for a computer scientist. We need evidence.
 
 ### What testing means
 
@@ -30,15 +30,15 @@ A **test** runs a small, specific example and checks its result:
 3. Run the code to get the **actual** result.
 4. Compare expected and actual, then report whether they match.
 
-For example, for `findMax({9, 4, 2})`, you expect `9`. The test calls the function, compares its actual result with `9`, and reports pass or fail.
+For example, for `findMax({9, 4, 2})`, we expect `9`. The test calls the function, compares its actual result with `9`, and reports pass or fail.
 
-After you have tests, an evidence-based answer to “Does it work?” sounds like this:
+After we have tests, an evidence-based answer to “Does it work?” sounds like this:
 
 > “It passes the tests I wrote for these cases. I may need more tests to cover other cases.”
 
-### Your responsibility as the developer
+### Our responsibility as developers
 
-Testing is your responsibility. Do not wait for a professor's tests to tell you whether your program works. Write tests yourself, run them, and show the evidence that your code passes them. In a class, that may feel unnecessary; on a real project, it is how teammates, reviewers, and future you gain confidence that a change did not break the software.
+Testing is our responsibility. We do not wait for a professor's tests to tell us whether a program works. We write tests, run them, and show the evidence that the code passes them. In a class, this can feel unnecessary; on a real project, it is how teammates and reviewers gain confidence that a change did not break the software.
 
 ### Warm-up: max of two values
 
@@ -96,7 +96,7 @@ g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max
 
 #### Stage 2: write the minimum code to pass
 
-Now add this function above `testFindMaxWhenFirstElementIsLargest`. It passes the single named test—but it is not a correct maximum function.
+Now add this function above `testFindMaxWhenFirstElementIsLargest`. It passes the single named test, but it is not a correct maximum function.
 
 ```cpp
 int findMax(const int values[], int size) {
@@ -165,7 +165,7 @@ All three tests pass. That does **not** mean the loop is correct; it means the t
 
 Imagine a teammate reports: “When I call `findMax` with `{2, 9, 4}`, it returns `2`, not `9`.”
 
-Do **not** open the debugger yet. First turn the report into a missing, reproducible test. This confirms that you understand the report and preserves the problem as a test that must pass after the fix.
+Do **not** open the debugger yet. First, turn the report into a missing, reproducible test. This confirms that we understand the report and preserves the problem as a test that must pass after the fix.
 
 Add this test function above `main`, using the reported input and expected result:
 
@@ -185,7 +185,7 @@ Then add this call in `main()` immediately after the first test call:
 testFindMaxWhenLaterElementIsLargest();
 ```
 
-Run the program again. The first three tests pass, while `testFindMaxWhenLaterElementIsLargest()` fails. Now the bug report is a verified failing test, so you are ready to debug.
+Run the program again. The first three tests pass, while `testFindMaxWhenLaterElementIsLargest()` fails. Now the bug report is a verified failing test, so we are ready to debug.
 
 The failure should include enough information to diagnose the problem without opening a debugger:
 
@@ -199,22 +199,22 @@ The failure should include enough information to diagnose the problem without op
 
 ##### Primary workflow: CLion breakpoints
 
-Use CLion's debugger to see why the second test fails before you change the code.
+We use CLion's debugger to see why the second test fails before changing the code.
 
 1. Open `find_max.cpp` in CLion and make sure the loop implementation from the previous step is present.
 2. Click in the left gutter beside the line `int actual = findMax(laterIsMax, 3);` to add a breakpoint.
 3. Start the program with **Debug** (the bug icon), not Run.
 4. When execution pauses, inspect `laterIsMax`, `expected`, and `actual` in the Variables pane. `actual` has not been assigned yet.
 5. Use **Step Into** to enter `findMax`. Inspect `maximum`, `values[0]`, and `size`.
-6. Use **Step Over** to move through the loop. When the code reaches `9`, watch whether `maximum` changes. Based on that observation, identify which statement belongs inside the `if` block.
+6. Use **Step Over** to move through the loop. When the code reaches `9`, watch whether `maximum` changes. From that observation, identify which statement belongs inside the `if` block.
 7. Step Over the `return` statement. Back in the test, inspect `actual`: it is `2`, even though `expected` is `9`.
 8. Use **Resume Program** to let the test framework report the failure.
 
-After you write the correct loop, put a breakpoint on `if (values[i] > maximum)`. Step Over the loop and watch `i`, `values[i]`, and `maximum`. You should see `maximum` change from `2` to `9`.
+After we write the correct loop, put a breakpoint on `if (values[i] > maximum)`. Step Over the loop and watch `i`, `values[i]`, and `maximum`. We should see `maximum` change from `2` to `9`.
 
 ##### Optional terminal workflow: `gdb`
 
-If you need to debug from a Linux terminal, compile with `-g`, then use `gdb`:
+For a Linux-terminal alternative, compile with `-g`, then use `gdb`:
 
 ```bash
 g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max
@@ -233,7 +233,7 @@ print values[0]
 quit
 ```
 
-The first call receives `{9, 4, 2}`; the failing call receives `{2, 9, 4}`. Use what you observed in the debugger to explain the result. Before fixing the code, add one more test that describes the same expected behavior with a different input:
+The first call receives `{9, 4, 2}`; the failing call receives `{2, 9, 4}`. Use the debugger observations to explain the result. Before fixing the code, add one more test that describes the same expected behavior with a different input:
 
 ```cpp
 void testFindMaxWhenLargestValueIsLast() {
@@ -279,7 +279,7 @@ g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max && ./find_max
 
 ### `const`: name values that should not change
 
-Use `const` when a value is set once and should not be reassigned. It documents your intent and lets the compiler catch accidental changes.
+We use `const` when a value is set once and should not be reassigned. It documents intent and lets the compiler catch accidental changes.
 
 ```cpp
 #include <iostream>
@@ -301,7 +301,7 @@ Use `const` for fixed facts such as a target amount, an interest rate, or a numb
 
 ### Exercise A: $1,000,000 now or a penny that doubles?
 
-Predict first: would you take $1,000,000 today, or one penny tomorrow that doubles every day for 30 days? The final day matters. Before changing anything, count how many times the loop actually runs.
+Before we run the program, choose: $1,000,000 today, or one penny tomorrow that doubles every day for 30 days? The final day matters. Count how many times the loop actually runs before changing anything.
 
 ```cpp
 #include <iomanip>
@@ -333,7 +333,7 @@ g++ -std=c++17 -Wall -Wextra penny.cpp -o penny && ./penny
 Try these deliberate checks:
 
 - Count the loop iterations from `day = 0` through `day = 30`. Does that represent 30 days or 31 days?
-- Fix the bounds so the code models exactly 30 days. Explain why your revised starting value and condition are correct.
+- Fix the bounds so the code models exactly 30 days. Explain why the revised starting value and condition are correct.
 - Try `int pennies = 1;`. Why is that a poor model for dollars and cents here?
 
 ### Exercise B: savings to $1,000,000
@@ -422,7 +422,7 @@ int main() {
 }
 ```
 
-The address will differ each time you run the program. A pointer stores an address: it is like writing a mailbox's house number on a piece of paper so you can find that mailbox again.
+The address will differ each time we run the program. A pointer stores an address: it is like writing a mailbox's house number on a piece of paper so we can find that mailbox again.
 
 ### Stack versus heap
 
@@ -567,7 +567,7 @@ Pairing rules:
 - `new T` → `delete pointer`
 - `new T[n]` → `delete[] pointer`
 
-In modern production C++, prefer `std::vector`, `std::string`, and smart pointers. We use raw `new`/`delete` here to make ownership and lifetime visible.
+In modern C++, we usually prefer `std::vector`, `std::string`, and smart pointers. We use raw `new`/`delete` here to make ownership and lifetime visible.
 
 ### Memory leak and Valgrind
 
@@ -599,7 +599,7 @@ Run Valgrind again. The goal is no definitely-lost blocks. The operating system 
 
 > **Safety:** Only run this exercise on a disposable course VM. It is deliberately limited below. Never run an unlimited allocator on a shared or personal machine.
 
-This uses `systemd-run` to cap the demo process at 256 MiB, so you can observe an allocation failure without exhausting the host.
+This uses `systemd-run` to cap the demo process at 256 MiB, so we can observe an allocation failure without exhausting the host.
 
 `oom_demo.cpp`:
 
@@ -664,7 +664,7 @@ journalctl -k -b | grep -Ei 'oom|out of memory|killed process|memory' | tail -n 
 tmux kill-session -t oom-demo
 ```
 
-If `systemd-run --user` is unavailable on your VM, do not remove the limit and run the demo without one. Ask the course staff or VM administrator for a cgroup/container limit instead.
+If `systemd-run --user` is unavailable on the VM, do not remove the limit and run the demo without one. Ask the course staff or VM administrator for a cgroup/container limit instead.
 
 ### Allocate/deallocate repeatedly versus preallocate and reuse
 
@@ -718,11 +718,11 @@ scores.add(30);
 System.out.println(scores.get(1));
 ```
 
-It still uses an underlying array with a capacity. When it fills, the implementation allocates a larger array, copies elements, and releases the old array for garbage collection. In C++, you will make those steps visible.
+It still uses an underlying array with a capacity. When it fills, the implementation allocates a larger array, copies elements, and releases the old array for garbage collection. In C++, we make those steps visible.
 
 ### Simplified `DynamicIntArray`
 
-This class owns its buffer. It starts with capacity 2, doubles when full, copies values, deletes the old buffer, and releases the final buffer in its destructor. Read the ownership flow as you run the program.
+This class owns its buffer. It starts with capacity 2, doubles when full, copies values, deletes the old buffer, and releases the final buffer in its destructor. Trace the ownership flow as we run the program.
 
 ```cpp
 #include <cassert>
