@@ -107,7 +107,7 @@ Then add this call in `main()` immediately after the first test call:
 testFindMaxWhenLaterElementIsLargest();
 ```
 
-Run the suite again. One named test passes; the new one fails.
+Run the program again. `testFindMaxWhenFirstElementIsLargest()` passes, while `testFindMaxWhenLaterElementIsLargest()` fails.
 
 The failure should include enough information to diagnose the problem without opening a debugger:
 
