@@ -83,31 +83,33 @@ We start by writing a small program right away. This gives us a feel for the C++
 
 Before we run the program, choose: $1,000,000 today, or one penny tomorrow that doubles every day for 30 days? The final day matters. Count how many times the loop actually runs before changing anything.
 
+Create a file named `penny_doubling.cpp`, then copy this starter code into your coding environment:
+
 ```cpp
 #include <iomanip>
 #include <iostream>
 
 int main() {
-    long double pennies = 1.0L;
-
-    for (int day = 0; day <= 30; ++day) {
-        std::cout << "Day " << std::setw(2) << day
-                  << ": $" << std::fixed << std::setprecision(2)
-                  << static_cast<double>(pennies / 100.0L) << '\n';
-        pennies *= 2.0L;
-    }
-
-    const long double doubledChoice = pennies / 2.0L / 100.0L;
-    std::cout << "Final doubled amount: $"
-              << static_cast<double>(doubledChoice) << '\n';
-    std::cout << (doubledChoice > 1000000.0L
-                      ? "Choose the doubling penny.\n"
-                      : "Choose the $1,000,000.\n");
+    // Imagine a strange offer: take $1,000,000 today, or take one penny
+    // tomorrow and let it double every day for 30 days. At first, a penny
+    // sounds tiny. For example, after a few doublings it is 1, 2, 4, 8...
+    // Does the small choice ever catch the $1,000,000 choice?
+    //
+    // TODO: Build the simulation. Start with one penny, double it once per
+    // day, print each day's dollar amount, then announce which choice wins.
+    //
+    // Hints as we build it:
+    // - Use long double for the number of pennies, starting at 1.0L.
+    // - A for loop can count the days. Be careful: if we count from 0 through
+    //   30, how many loop iterations do we actually run?
+    // - Divide pennies by 100.0L to display dollars, such as $0.01 for one penny.
+    // - Use std::fixed and std::setprecision(2) to make dollar amounts readable.
+    // - Use an if/else statement or the ternary operator to announce the winner.
 }
 ```
 
 ```bash
-g++ -std=c++17 -Wall -Wextra penny.cpp -o penny && ./penny
+g++ -std=c++17 -Wall -Wextra penny_doubling.cpp -o penny_doubling && ./penny_doubling
 ```
 
 Try these deliberate checks:
@@ -115,6 +117,10 @@ Try these deliberate checks:
 - Count the loop iterations from `day = 0` through `day = 30`. Does that represent 30 days or 31 days?
 - Fix the bounds so the code models exactly 30 days. Explain why the revised starting value and condition are correct.
 - Try `int pennies = 1;`. Why is that a poor model for dollars and cents here?
+
+### Completed reference file
+
+After attempting the exercise, compare your work with [penny_doubling.cpp](penny_doubling.cpp). It compiles directly with the command above.
 
 ### Exercise B: savings to $1,000,000
 
