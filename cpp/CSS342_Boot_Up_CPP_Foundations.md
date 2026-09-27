@@ -40,13 +40,19 @@ On an Ubuntu machine, install the compiler, debugger, build tools, and Valgrind:
 
 ```bash
 sudo apt update
-sudo apt install -y build-essential gdb valgrind cmake
+sudo apt install -y build-essential gdb valgrind cmake vim
 g++ --version
 gdb --version
 valgrind --version
 ```
 
 `build-essential` installs the GCC C++ toolchain, including `g++` and `make`. Valgrind is a Linux memory-analysis tool that we use later to find leaks and invalid memory use.
+
+### Vim on Linux
+
+Vim is a strong development tool, not just a text editor. It is fast, available on many Linux systems, and practical when we connect to a remote machine where a graphical IDE is unavailable. We can edit source files, search, replace text, and work efficiently without leaving the terminal.
+
+From the instructor's perspective, Vim is worth learning beyond this class. We do not need to master every command today, but becoming comfortable with it will help when working on servers, in remote environments, and throughout a software-development career.
 
 ### CLion and Linux: how we use both
 
