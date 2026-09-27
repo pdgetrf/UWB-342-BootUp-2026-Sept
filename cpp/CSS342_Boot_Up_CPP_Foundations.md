@@ -4,6 +4,7 @@ Welcome to the CSS 342 C++ boot-up session. We will read, run, and modify small 
 
 ## Guide: TL;DR
 
+- [Development environment](#0-development-environment): Choose a Windows, macOS, or Ubuntu Linux setup; use CLion for editing and debugging, and Linux for `g++` and Valgrind.
 - [Before we begin](#before-we-begin): Check that `g++` is available and create a working folder.
 - [Testing mindset](#1-testing-mindset-findmax-and-tdd): Build evidence with tests, follow a TDD cycle, turn a bug report into a failing test, and use CLion to investigate a `findMax` bug.
 - [Baby-step coding](#2-baby-step-coding): Practice `const`, loops, numeric types, conditionals, and functions with two financial exercises.
@@ -11,9 +12,49 @@ Welcome to the CSS 342 C++ boot-up session. We will read, run, and modify small 
 - [OOP and dynamic arrays](#4-oop-from-java-arraylist-to-a-c-dynamic-array): Connect Java `ArrayList` to a C++ class that owns, grows, and releases a dynamic array.
 - [Exit ticket](#exit-ticket): Check the core ideas before leaving the session.
 
+## 0. Development environment
+
+We can write C++ on Windows, macOS, or Linux. The goal is the same on every platform: an editor or IDE, a compiler, and a debugger. During this session, we use **CLion** to write code and step through it with breakpoints. We also use **Ubuntu Linux** for the command-line compiler and Valgrind memory-leak checks.
+
+CLion runs on Windows, macOS, and Linux. It supports CMake projects and can use GCC, Clang, MSVC, MinGW, and WSL toolchains. See the official [CLion quick-start guide](https://www.jetbrains.com/help/clion/clion-quick-start-guide.html) for installation and toolchain details.
+
+### Why we use CLion
+
+We use CLion because it offers a free non-commercial license, and JetBrains also has complimentary access programs for eligible students and teachers. Check the current license terms when activating it. It gives us the same editor and debugger experience on Windows and macOS, and it also runs on Linux. For Linux, JetBrains supports installation through Toolbox, a downloaded archive, or Ubuntu's Snap package. We have not used CLion on Linux in this session, but it is a supported option.
+
+CLion comes from JetBrains, the company behind IntelliJ IDEA. If we have used IntelliJ before, the project navigation, code completion, refactoring, run configurations, and debugging workflow will feel familiar. Those development tools let us spend more time understanding C++ behavior and less time managing editor details.
+
+### Choose a platform
+
+| Platform | Good starting tools | Quick setup | Course use |
+| --- | --- | --- | --- |
+| Windows | CLion with its bundled MinGW toolchain, or Visual Studio with the **Desktop development with C++** workload | Install CLion through [JetBrains Toolbox](https://www.jetbrains.com/toolbox-app/) and confirm a toolchain in CLion. Windows students can also use Ubuntu through WSL for a Linux environment. | Write and debug in CLion. Use the course Ubuntu machine or WSL when Linux tools are needed. |
+| macOS | CLion plus Apple's command-line developer tools | Run `xcode-select --install`, then open CLion and let it detect the Clang toolchain. | Write and debug in CLion. Use the course Ubuntu machine for the Linux and Valgrind exercises. |
+| Linux, using Ubuntu | CLion or another editor, `g++`, `gdb`, and Valgrind | Install the tools with the commands below. | This is the environment we use for `g++` compilation and Valgrind. |
+
+Other common IDE choices include Visual Studio on Windows and VS Code on all three platforms. Use the environment that lets us edit, build, run, and debug C++ comfortably. CLion is the shared debugger demonstration environment for this session.
+
+### Ubuntu setup for this session
+
+On an Ubuntu machine, install the compiler, debugger, build tools, and Valgrind:
+
+```bash
+sudo apt update
+sudo apt install -y build-essential gdb valgrind cmake
+g++ --version
+gdb --version
+valgrind --version
+```
+
+`build-essential` installs the GCC C++ toolchain, including `g++` and `make`. Valgrind is a Linux memory-analysis tool that we use later to find leaks and invalid memory use.
+
+### CLion and Linux: how we use both
+
+For ordinary coding, we create a C++ project in CLion, write code, and use breakpoints, Step Into, and Step Over to debug. CLion works locally on Windows, macOS, and Linux. When we need Linux-specific tools, we compile and run on Ubuntu. Windows users may use WSL, and any student may use the course Linux machine if one is provided.
+
 ## Before we begin
 
-Use a Linux terminal with a C++ compiler. The examples below use `g++` and C++17.
+For the command-line examples, use an Ubuntu terminal with a C++ compiler. The examples below use `g++` and C++17.
 
 ```bash
 g++ --version
