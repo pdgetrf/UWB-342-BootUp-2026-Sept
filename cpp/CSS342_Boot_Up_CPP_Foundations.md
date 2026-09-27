@@ -124,7 +124,11 @@ After attempting the exercise, compare your work with [penny_doubling.cpp](penny
 
 ### Exercise B: savings to $1,000,000
 
-This model applies a monthly deposit, then one month of interest. State that assumption clearly: changing the order changes the result. Create `savings_to_million.cpp`, then copy this starter into your coding environment:
+This model applies a monthly deposit, then one month of interest. State that assumption clearly: changing the order changes the result. We use a **7% annual rate** as a conservative classroom estimate based on the S&P 500, an index of roughly 500 large U.S. companies. We can change the starting balance, deposit, rate, and target when running the example.
+
+> **Teaching only, not investment advice:** This is a programming model, not a recommendation, prediction, or guarantee about investing. Real investment returns vary, and past market performance does not guarantee future results.
+
+Create `savings_to_million.cpp`, then copy this starter into your coding environment:
 
 ```cpp
 #include <iomanip>
@@ -140,11 +144,14 @@ int main() {
     // starts helping to earn more money. A small monthly habit can matter.
     //
     // TODO: Simulate the account one month at a time. Start with a balance,
-    // monthly deposit, annual interest rate, and target. Keep going until the
-    // balance reaches the target. Then display the final balance, months, and years.
+    // monthly deposit, annual interest rate, and target. For this example, use
+    // 0.07 as the annual rate: a conservative classroom estimate based on the
+    // S&P 500, an index of roughly 500 large U.S. companies. Keep going until
+    // the balance reaches the target. Then display the final balance, months, and years.
     //
     // Hints as we build it:
-    // - Use double for the balance, deposit, rate, and target.
+    // - Use double for the balance, deposit, rate, and target. Try changing the
+    //   0.07 rate or monthly deposit after the first run and compare the result.
     // - Use an int to count months.
     // - A while loop fits because we do not know the answer in advance.
     // - Convert an annual rate to a monthly rate with annualRate / 12.0.
@@ -185,8 +192,8 @@ double yearsToMillion(double startingBalance,
 }
 
 int main() {
-    std::cout << "At $50/month:  " << yearsToMillion(1000, 50, 0.08) << " years\n";
-    std::cout << "At $500/month: " << yearsToMillion(1000, 500, 0.08) << " years\n";
+    std::cout << "At $50/month:  " << yearsToMillion(1000, 50, 0.07) << " years\n";
+    std::cout << "At $500/month: " << yearsToMillion(1000, 500, 0.07) << " years\n";
 }
 ```
 
@@ -199,7 +206,7 @@ We use `const` when a value is set once and should not be reassigned. It documen
 
 int main() {
     const int daysInMonth = 30;
-    const double annualRate = 0.08;
+    const double annualRate = 0.07;
     double balance = 1000.0;
 
     balance += 500.0; // allowed: balance can change

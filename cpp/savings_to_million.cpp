@@ -5,7 +5,7 @@ int main() {
     const double target = 1000000.0;
     double balance = 1000.0;
     const double monthlyDeposit = 500.0;
-    const double annualRate = 0.08;
+    const double annualRate = 0.07;
     int months = 0;
 
     while (balance < target) {
