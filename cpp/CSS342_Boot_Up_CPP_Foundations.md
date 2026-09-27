@@ -6,8 +6,8 @@ Welcome to the CSS 342 C++ boot-up session. We will read, run, and modify small 
 
 - [Development environment](#0-development-environment): Choose a Windows, macOS, or Ubuntu Linux setup; use CLion for editing and debugging, and Linux for `g++` and Valgrind.
 - [Before we begin](#before-we-begin): Check that `g++` is available and create a working folder.
-- [Testing mindset](#1-testing-mindset-findmax-and-tdd): Build evidence with tests, follow a TDD cycle, turn a bug report into a failing test, and use CLion to investigate a `findMax` bug.
-- [Baby-step coding](#2-baby-step-coding): Practice `const`, loops, numeric types, conditionals, and functions with two financial exercises.
+- [Baby-step coding](#1-baby-step-coding-start-by-writing-code): Start coding immediately with `const`, loops, numeric types, conditionals, and functions through two financial exercises.
+- [Testing mindset](#2-testing-mindset-findmax-and-tdd): Build evidence with tests, follow a TDD cycle, turn a bug report into a failing test, and use CLion to investigate a `findMax` bug.
 - [Memory](#3-memory-stack-heap-pointers-arrays-and-ownership): Learn bits, bytes, addresses, stack versus heap, pointers, references, arrays, dynamic allocation, leaks, Valgrind, and controlled OOM behavior.
 - [OOP and dynamic arrays](#4-oop-from-java-arraylist-to-a-c-dynamic-array): Connect Java `ArrayList` to a C++ class that owns, grows, and releases a dynamic array.
 - [Exit ticket](#exit-ticket): Check the core ideas before leaving the session.
@@ -75,7 +75,131 @@ mkdir -p css342-bootup && cd css342-bootup
 
 ---
 
-## 1. Testing mindset: `findMax` and TDD
+## 1. Baby-step coding: start by writing code
+
+We start by writing a small program right away. This gives us a feel for the C++ tools, variables, loops, output, and functions. Once we have code in front of us, we can ask the next important question: how do we know it works?
+
+### `const`: name values that should not change
+
+We use `const` when a value is set once and should not be reassigned. It documents intent and lets the compiler catch accidental changes.
+
+```cpp
+#include <iostream>
+
+int main() {
+    const int daysInMonth = 30;
+    const double annualRate = 0.08;
+    double balance = 1000.0;
+
+    balance += 500.0; // allowed: balance can change
+    std::cout << "Balance: $" << balance << '\n';
+    std::cout << "Days: " << daysInMonth << '\n';
+
+    // daysInMonth = 31; // compiler error: a const value cannot change
+}
+```
+
+Use `const` for fixed facts such as a target amount, an interest rate, or a number of days. Do not use it for values that are expected to change during a calculation, such as `balance`, `months`, or a loop counter.
+
+### Exercise A: $1,000,000 now or a penny that doubles?
+
+Before we run the program, choose: $1,000,000 today, or one penny tomorrow that doubles every day for 30 days? The final day matters. Count how many times the loop actually runs before changing anything.
+
+```cpp
+#include <iomanip>
+#include <iostream>
+
+int main() {
+    long double pennies = 1.0L;
+
+    for (int day = 0; day <= 30; ++day) {
+        std::cout << "Day " << std::setw(2) << day
+                  << ": $" << std::fixed << std::setprecision(2)
+                  << static_cast<double>(pennies / 100.0L) << '\n';
+        pennies *= 2.0L;
+    }
+
+    const long double doubledChoice = pennies / 2.0L / 100.0L;
+    std::cout << "Final doubled amount: $"
+              << static_cast<double>(doubledChoice) << '\n';
+    std::cout << (doubledChoice > 1000000.0L
+                      ? "Choose the doubling penny.\n"
+                      : "Choose the $1,000,000.\n");
+}
+```
+
+```bash
+g++ -std=c++17 -Wall -Wextra penny.cpp -o penny && ./penny
+```
+
+Try these deliberate checks:
+
+- Count the loop iterations from `day = 0` through `day = 30`. Does that represent 30 days or 31 days?
+- Fix the bounds so the code models exactly 30 days. Explain why the revised starting value and condition are correct.
+- Try `int pennies = 1;`. Why is that a poor model for dollars and cents here?
+
+### Exercise B: savings to $1,000,000
+
+This model applies a monthly deposit, then one month of interest. State that assumption clearly: changing the order changes the result.
+
+```cpp
+#include <iomanip>
+#include <iostream>
+
+int main() {
+    const double target = 1000000.0;
+    double balance = 1000.0;
+    const double monthlyDeposit = 500.0;
+    const double annualRate = 0.08;
+    int months = 0;
+
+    while (balance < target) {
+        balance += monthlyDeposit;
+        balance *= 1.0 + annualRate / 12.0;
+        ++months;
+    }
+
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << "Balance: $" << balance << '\n';
+    std::cout << "Months: " << months << '\n';
+    std::cout << "Years: " << months / 12.0 << '\n';
+}
+```
+
+Before running it, predict the result for `$50`, `$500`, and `$1,000` monthly deposits. Then refactor: keep the behavior the same while moving the calculation into a reusable function.
+
+```cpp
+#include <iostream>
+
+double yearsToMillion(double startingBalance,
+                      double monthlyDeposit,
+                      double annualRate) {
+    const double target = 1000000.0;
+    double balance = startingBalance;
+    int months = 0;
+
+    while (balance < target) {
+        balance += monthlyDeposit;
+        balance *= 1.0 + annualRate / 12.0;
+        ++months;
+    }
+
+    return months / 12.0;
+}
+
+int main() {
+    std::cout << "At $50/month:  " << yearsToMillion(1000, 50, 0.08) << " years\n";
+    std::cout << "At $500/month: " << yearsToMillion(1000, 500, 0.08) << " years\n";
+}
+```
+
+### From writing code to testing it
+
+We have started writing code. Now we need a reliable answer when someone asks, “Does it work?”
+
+---
+
+## 2. Testing mindset: `findMax` and TDD
 
 ### “Does it work?”
 
@@ -334,124 +458,6 @@ g++ -std=c++17 -Wall -Wextra -g find_max.cpp -o find_max && ./find_max
 ```
 
 **Takeaway:** Tests are evidence, not a certificate of correctness. When a bug appears, preserve it as a new test, add nearby cases, then fix the implementation.
-
----
-
-## 2. Baby-step coding
-
-### `const`: name values that should not change
-
-We use `const` when a value is set once and should not be reassigned. It documents intent and lets the compiler catch accidental changes.
-
-```cpp
-#include <iostream>
-
-int main() {
-    const int daysInMonth = 30;
-    const double annualRate = 0.08;
-    double balance = 1000.0;
-
-    balance += 500.0; // allowed: balance can change
-    std::cout << "Balance: $" << balance << '\n';
-    std::cout << "Days: " << daysInMonth << '\n';
-
-    // daysInMonth = 31; // compiler error: a const value cannot change
-}
-```
-
-Use `const` for fixed facts such as a target amount, an interest rate, or a number of days. Do not use it for values that are expected to change during a calculation, such as `balance`, `months`, or a loop counter.
-
-### Exercise A: $1,000,000 now or a penny that doubles?
-
-Before we run the program, choose: $1,000,000 today, or one penny tomorrow that doubles every day for 30 days? The final day matters. Count how many times the loop actually runs before changing anything.
-
-```cpp
-#include <iomanip>
-#include <iostream>
-
-int main() {
-    long double pennies = 1.0L;
-
-    for (int day = 0; day <= 30; ++day) {
-        std::cout << "Day " << std::setw(2) << day
-                  << ": $" << std::fixed << std::setprecision(2)
-                  << static_cast<double>(pennies / 100.0L) << '\n';
-        pennies *= 2.0L;
-    }
-
-    const long double doubledChoice = pennies / 2.0L / 100.0L;
-    std::cout << "Final doubled amount: $"
-              << static_cast<double>(doubledChoice) << '\n';
-    std::cout << (doubledChoice > 1000000.0L
-                      ? "Choose the doubling penny.\n"
-                      : "Choose the $1,000,000.\n");
-}
-```
-
-```bash
-g++ -std=c++17 -Wall -Wextra penny.cpp -o penny && ./penny
-```
-
-Try these deliberate checks:
-
-- Count the loop iterations from `day = 0` through `day = 30`. Does that represent 30 days or 31 days?
-- Fix the bounds so the code models exactly 30 days. Explain why the revised starting value and condition are correct.
-- Try `int pennies = 1;`. Why is that a poor model for dollars and cents here?
-
-### Exercise B: savings to $1,000,000
-
-This model applies a monthly deposit, then one month of interest. State that assumption clearly: changing the order changes the result.
-
-```cpp
-#include <iomanip>
-#include <iostream>
-
-int main() {
-    const double target = 1000000.0;
-    double balance = 1000.0;
-    const double monthlyDeposit = 500.0;
-    const double annualRate = 0.08;
-    int months = 0;
-
-    while (balance < target) {
-        balance += monthlyDeposit;
-        balance *= 1.0 + annualRate / 12.0;
-        ++months;
-    }
-
-    std::cout << std::fixed << std::setprecision(2);
-    std::cout << "Balance: $" << balance << '\n';
-    std::cout << "Months: " << months << '\n';
-    std::cout << "Years: " << months / 12.0 << '\n';
-}
-```
-
-Before running it, predict the result for `$50`, `$500`, and `$1,000` monthly deposits. Then refactor: keep the behavior the same while moving the calculation into a reusable function.
-
-```cpp
-#include <iostream>
-
-double yearsToMillion(double startingBalance,
-                      double monthlyDeposit,
-                      double annualRate) {
-    const double target = 1000000.0;
-    double balance = startingBalance;
-    int months = 0;
-
-    while (balance < target) {
-        balance += monthlyDeposit;
-        balance *= 1.0 + annualRate / 12.0;
-        ++months;
-    }
-
-    return months / 12.0;
-}
-
-int main() {
-    std::cout << "At $50/month:  " << yearsToMillion(1000, 50, 0.08) << " years\n";
-    std::cout << "At $500/month: " << yearsToMillion(1000, 500, 0.08) << " years\n";
-}
-```
 
 ---
 
