@@ -11,8 +11,6 @@ g++ --version
 mkdir -p css342-bootup && cd css342-bootup
 ```
 
-> **Safety:** Only run the OOM exercise on a disposable course VM. It is deliberately limited below. Never run an unlimited allocator on a shared or personal machine.
-
 ---
 
 ## 1. Testing mindset: `findMax` and TDD
@@ -370,6 +368,35 @@ int main() {
 
 ## 3. Memory: stack, heap, pointers, arrays, and ownership
 
+### Memory foundations: bits, bytes, size, and addresses
+
+A computer stores information as **bits**: each bit is a `0` or a `1`. Eight bits make one **byte**. Memory is measured in larger groups of bytes:
+
+- `1 byte` = 8 bits
+- `1 KiB` = 1,024 bytes
+- `1 MiB` = 1,024 KiB = 1,048,576 bytes
+- `1 MB` is often used informally for about one million bytes; system tools may display either MB or MiB, so read the label.
+
+Think of memory as a very long street of mailboxes.
+
+- A mailbox's **address** tells you where it is, like a house number.
+- Its **contents** are the bits stored there, such as the value of an `int`.
+- Its **size** tells you how many neighboring mailboxes the value occupies. For example, `sizeof(int)` is commonly 4 bytes, but verify rather than assume.
+
+```cpp
+#include <iostream>
+
+int main() {
+    int score = 342;
+
+    std::cout << "contents: " << score << '\n';
+    std::cout << "address:  " << &score << '\n';
+    std::cout << "size:     " << sizeof(score) << " bytes\n";
+}
+```
+
+The address will differ each time you run the program. A pointer stores an address: it is like writing a mailbox's house number on a piece of paper so you can find that mailbox again.
+
 ### Stack versus heap
 
 Local variables and function-call bookkeeping live on the **stack** and are released automatically when their scope ends. Dynamically allocated objects live on the **heap** until code releases them (or the process ends).
@@ -543,7 +570,9 @@ Run Valgrind again. The goal is no definitely-lost blocks. The operating system 
 
 ### Controlled OOM demonstration with tmux
 
-Run this only on a disposable Linux course VM. It uses `systemd-run` to cap the demo process at 256 MiB, so you can observe an allocation failure without exhausting the host.
+> **Safety:** Only run this exercise on a disposable course VM. It is deliberately limited below. Never run an unlimited allocator on a shared or personal machine.
+
+This uses `systemd-run` to cap the demo process at 256 MiB, so you can observe an allocation failure without exhausting the host.
 
 `oom_demo.cpp`:
 
