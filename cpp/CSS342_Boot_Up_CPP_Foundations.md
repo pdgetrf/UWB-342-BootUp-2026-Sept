@@ -125,6 +125,8 @@ We intentionally begin with `int`. If we extend the experiment and the result no
 
 After attempting the exercise, compare your work with [penny_doubling.cpp](penny_doubling.cpp). It compiles directly with the command above.
 
+For the full live session, the completed examples are also available as individual files in this folder: `memory_foundations.cpp`, `stack_heap.cpp`, `stack_overflow.cpp`, `pointer_reference.cpp`, `array_decay.cpp`, `out_of_bounds.cpp`, `new_delete_array.cpp`, `leak.cpp`, `oom_demo.cpp`, `allocation_reuse.cpp`, `find_max.cpp`, and `dynamic_array.cpp`. Compile and run each one separately because each has its own `main()` function.
+
 ### Exercise B: savings to $1,000,000
 
 While we are on the topic of $1,000,000, here is the next question: **how soon can we get there?** This model compounds **annually**, not monthly. Each year, we apply 7% interest to the previous year's ending balance, then add 12 months of new contributions. We also compare the account's value with the amount of money we personally contributed. We use a **7% annual rate** as a conservative classroom estimate based on the S&P 500, an index of roughly 500 large U.S. companies. We can change the starting deposit, monthly contribution, rate, and target when running the example.
